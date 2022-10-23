@@ -1,8 +1,8 @@
 import express, { Router, Request, Response } from 'express';
-import { get } from '../controllers/exercises';
+import { get } from '../controllers/worksheets';
 
 const router: Router = express.Router();
 
-router.get('/', get);
+router.get('/worksheets ', get);
 
 export default router;
