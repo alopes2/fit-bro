@@ -1,5 +1,5 @@
 {
-  "name": "fit-bro",
+  "name": "fit-buddy",
   "version": "1.0.0",
   "description": "Track your Gym exercises",
   "main": "index.js",
@@ -11,14 +11,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/alopes2/fit-bro.git"
+    "url": "git+https://github.com/alopes2/fit-buddy.git"
   },
   "author": "Andre Lopes",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/alopes2/fit-bro/issues"
+    "url": "https://github.com/alopes2/fit-buddy/issues"
   },
-  "homepage": "https://github.com/alopes2/fit-bro#readme",
+  "homepage": "https://github.com/alopes2/fit-buddy#readme",
   "devDependencies": {
     "@types/express": "^4.17.14",
     "@types/node": "^18.11.3",
