@@ -1,5 +1,6 @@
 import express, { Request, Response} from 'express';
 import exerciseRoutes from './endpoints/routes/worksheets';
+import homeRoutes from './endpoints/routes/home';
 
 const app = express();
 
@@ -7,9 +8,7 @@ const port = 5000;
 
 app.use(express.json());
 
-app.get('/', (req: Request, res: Response) => {
-  res.json({msg: 'Hello'});
-});
+app.use(homeRoutes);
 
 app.use(exerciseRoutes);
 
