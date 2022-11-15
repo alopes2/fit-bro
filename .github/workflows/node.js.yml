@@ -36,3 +36,22 @@ jobs:
           server/build
         retention-days: 5
     # - run: npm test
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    env:
+      HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY}}
+
+    steps:
+    - name: Download production artifacts
+      uses: actions/download-artifact@v3
+      with:
+        name: server_build_${{ github.sha }}
+    - name: Use Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: 19.x
+    - name: Install Heroku CLI
+      run: npm install -g heroku
+    - run: heroku auth:token
