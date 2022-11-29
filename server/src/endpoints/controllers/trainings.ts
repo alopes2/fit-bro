@@ -2,14 +2,18 @@ import { Request, Response, NextFunction } from 'express';
 import { Training } from '../models/Training';
 import { firestore } from '../../config/firebase';
 
-type TrainingPaginationQuery = { page: string, offset: string};
-type GetTrainingsRequest = Request<any, any, any, TrainingPaginationQuery>
+type TrainingPaginationQuery = { page: string; offset: string };
+type GetTrainingsRequest = Request<any, any, any, TrainingPaginationQuery>;
 
-export const getTrainings = async (req: GetTrainingsRequest, res: Response<Training[] | string>, next: NextFunction) => {
+export const getTrainings = async (
+  req: GetTrainingsRequest,
+  res: Response<Training[] | string>,
+  next: NextFunction,
+) => {
   const pagination = req.query;
   const pageQuery = Math.abs(parseInt(pagination.page));
   const offsetQuery = Math.abs(parseInt(pagination.offset));
-  const page: number =  (pageQuery || 1) - 1;
+  const page: number = (pageQuery || 1) - 1;
   const offset: number = offsetQuery || 10;
 
   const data = await firestore()
@@ -35,7 +39,11 @@ export const getTrainings = async (req: GetTrainingsRequest, res: Response<Train
   res.status(200).json(training);
 };
 
-export const getLatestTraining = async (req: GetTrainingsRequest, res: Response<Training | string>, next: NextFunction) => {
+export const getLatestTraining = async (
+  req: GetTrainingsRequest,
+  res: Response<Training | string>,
+  next: NextFunction,
+) => {
   const data = await firestore()
     .collection('trainings')
     .orderBy('createdAt')
@@ -72,7 +80,7 @@ export const createNewTraining = async (
 };
 
 type TrainingRequestParams = { id: string };
-type DeleteTrainingRequest = Request<TrainingRequestParams, any, any, any>
+type DeleteTrainingRequest = Request<TrainingRequestParams, any, any, any>;
 
 export const deleteTraining = async (
   req: DeleteTrainingRequest,
@@ -81,9 +89,7 @@ export const deleteTraining = async (
 ) => {
   const params = req.params;
 
-  const training = firestore().collection('trainings').doc(params.id);
-
-  await training.delete();
+  await firestore().collection('trainings').doc(params.id).delete();
 
   res.status(200).json('Deleted Worksheet');
 };

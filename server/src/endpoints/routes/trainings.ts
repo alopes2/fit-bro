@@ -6,14 +6,20 @@ import {
   deleteTraining,
 } from '../controllers/trainings';
 
+import worksheetRoutes from './worksheets';
+
 const router: Router = Router();
 
-router.get('/trainings', getLatestTraining);
+const baseUrl = '/trainings';
 
-router.get('/trainings/list', getTrainings);
+router.get(baseUrl, getLatestTraining);
 
-router.post('/trainings', createNewTraining);
+router.get(`${baseUrl}/list`, getTrainings);
 
-router.delete('/trainings/:id', deleteTraining);
+router.post(baseUrl, createNewTraining);
+
+router.delete(`${baseUrl}/:id`, deleteTraining);
+
+router.use(`${baseUrl}/:trainingId`, worksheetRoutes);
 
 export default router;
