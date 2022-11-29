@@ -5,8 +5,6 @@ dotenv.config();
 import express from 'express';
 import trainingsRoutes from './endpoints/routes/trainings';
 import homeRoutes from './endpoints/routes/home';
-import { firestore } from './config/firebase';
-
 
 const app = express();
 

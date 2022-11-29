@@ -1,13 +1,16 @@
+import { getTrainings } from './../controllers/trainings';
 import { Router } from 'express';
 import {
-  get,
+  getLatestTraining,
   createNewTraining,
   deleteTraining,
 } from '../controllers/trainings';
 
 const router: Router = Router();
 
-router.get('/trainings', get);
+router.get('/trainings', getLatestTraining);
+
+router.get('/trainings/list', getTrainings);
 
 router.post('/trainings', createNewTraining);
 
