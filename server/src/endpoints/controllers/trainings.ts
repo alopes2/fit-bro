@@ -1,3 +1,4 @@
+import { Worksheet } from './../models/Worksheet';
 import { Request, Response, NextFunction } from 'express';
 import { Training } from '../models/Training';
 import { firestore } from '../../config/firebase';
@@ -63,6 +64,23 @@ export const getLatestTraining = async (
   if (!training) {
     return res.status(404).json({ message: 'No trainings available yet' });
   }
+
+  const worksheetsCollection = await firestore()
+  .collection('trainings')
+  .doc(training.id)
+  .collection('worksheets')
+  .get();
+
+  const worksheets: Worksheet[] = worksheetsCollection.docs.map(doc => {
+    const data = doc.data();
+    return {
+      id: doc.id,
+      name: data.name,
+      createdAt: data.createdAt.toDate(),
+    }
+  });
+
+  training.worksheets = worksheets;
 
   res.status(200).json(training);
 };
