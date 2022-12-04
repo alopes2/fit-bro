@@ -1,13 +1,15 @@
 import { Request, Response, NextFunction } from 'express';
 import { Training } from '../models/Training';
 import { firestore } from '../../config/firebase';
+import { BaseApiResponse } from '../models/BaseApiResponse';
 
 type TrainingPaginationQuery = { page: string; offset: string };
 type GetTrainingsRequest = Request<any, any, any, TrainingPaginationQuery>;
+type CreateTrainingResponse = { trainingId: string } & BaseApiResponse;
 
 export const getTrainings = async (
   req: GetTrainingsRequest,
-  res: Response<Training[] | string>,
+  res: Response<Training[] | BaseApiResponse>,
   next: NextFunction,
 ) => {
   const pagination = req.query;
@@ -33,7 +35,7 @@ export const getTrainings = async (
   });
 
   if (training.length === 0) {
-    return res.status(404).json('No trainings found');
+    return res.status(404).json({ message: 'No trainings found' });
   }
 
   res.status(200).json(training);
@@ -41,7 +43,7 @@ export const getTrainings = async (
 
 export const getLatestTraining = async (
   req: GetTrainingsRequest,
-  res: Response<Training | string>,
+  res: Response<Training | BaseApiResponse>,
   next: NextFunction,
 ) => {
   const data = await firestore()
@@ -52,16 +54,14 @@ export const getLatestTraining = async (
 
   const training: Training = data.docs.map((d) => {
     const data = d.data();
-    const firestoreTraining: Training = {
+    return {
       id: d.id,
       createdAt: data.createdAt.toDate(),
     };
-
-    return firestoreTraining;
   })[0];
 
   if (!training) {
-    return res.status(404).json('No trainings available yet');
+    return res.status(404).json({ message: 'No trainings available yet' });
   }
 
   res.status(200).json(training);
@@ -69,14 +69,14 @@ export const getLatestTraining = async (
 
 export const createNewTraining = async (
   req: Request,
-  res: Response<string>,
+  res: Response<CreateTrainingResponse>,
   next: NextFunction,
 ) => {
   const response = await firestore().collection('trainings').add({
     createdAt: firestore.FieldValue.serverTimestamp(),
   });
 
-  res.status(201).json(response.id);
+  res.status(201).json({ message: 'Training created', trainingId: response.id });
 };
 
 type TrainingRequestParams = { id: string };
@@ -84,12 +84,12 @@ type DeleteTrainingRequest = Request<TrainingRequestParams, any, any, any>;
 
 export const deleteTraining = async (
   req: DeleteTrainingRequest,
-  res: Response<string>,
+  res: Response<BaseApiResponse>,
   next: NextFunction,
 ) => {
   const params = req.params;
 
   await firestore().collection('trainings').doc(params.id).delete();
 
-  res.status(200).json('Deleted Worksheet');
+  res.status(200).json({ message: 'Training deleted' });
 };

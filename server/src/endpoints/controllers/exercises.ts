@@ -11,7 +11,7 @@ type SaveExerciseRequestBody = {
   weight: number;
 };
 
-export const GetExercises = async (
+export const getExercises = async (
   req: Request<BaseRouteParam, any, any, any>,
   res: Response<Exercise[] | BaseApiResponse>,
   next: NextFunction,
@@ -38,7 +38,7 @@ export const GetExercises = async (
   res.status(200).json(exercises);
 };
 
-export const CreateExercises = async (
+export const createExercises = async (
   req: Request<BaseRouteParam, any, SaveExerciseRequestBody, any>,
   res: Response<CreateExerciseResponse | BaseApiResponse>,
   next: NextFunction,
@@ -85,7 +85,7 @@ export const CreateExercises = async (
     .json({ message: 'Exercise created', exerciseId: addResult.id });
 };
 
-export const UpdateExercises = async (
+export const updateExercises = async (
   req: Request<ExerciseRequestParams, any, SaveExerciseRequestBody, any>,
   res: Response<BaseApiResponse>,
   next: NextFunction,
@@ -97,7 +97,7 @@ export const UpdateExercises = async (
     {
       return res.status(400).json({message: 'Name or weight not provided'});
     }
-  
+
     if (weight < 0)
     {
       return res.status(400).json({message: 'Weight must not be below 0'});
@@ -121,7 +121,7 @@ export const UpdateExercises = async (
   }
 };
 
-export const DeleteExercises = async (
+export const deleteExercises = async (
   req: Request<ExerciseRequestParams, any, any, any>,
   res: Response<BaseApiResponse>,
   next: NextFunction,

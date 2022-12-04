@@ -1,21 +1,21 @@
 import { Router } from 'express';
 import {
-  CreateExercises,
-  DeleteExercises,
-  GetExercises,
-  UpdateExercises,
+  createExercises,
+  deleteExercises,
+  getExercises,
+  updateExercises,
 } from '../controllers/exercises';
 
 const router: Router = Router({ mergeParams: true });
 
 const baseUrl = '/exercises';
 
-router.get(baseUrl, GetExercises);
+router.get(baseUrl, getExercises);
 
-router.post(baseUrl, CreateExercises);
+router.post(baseUrl, createExercises);
 
-router.put(`${baseUrl}/:exerciseId`, UpdateExercises);
+router.put(`${baseUrl}/:exerciseId`, updateExercises);
 
-router.delete(`${baseUrl}/:exerciseId`, DeleteExercises);
+router.delete(`${baseUrl}/:exerciseId`, deleteExercises);
 
 export default router;

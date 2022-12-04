@@ -1,9 +1,11 @@
 import { Request, Response, NextFunction } from 'express';
 import { firestore } from '../../config/firebase';
+import { BaseApiResponse } from '../models/BaseApiResponse';
 import { Worksheet } from '../models/Worksheet';
 
 type BaseRouteParam = { trainingId: string };
 type WorksheetRouteParam = { worksheetId: string } & BaseRouteParam;
+type CreateWorksheetResponse = { worksheetId: string } & BaseApiResponse;
 
 export const getWorksheetsByTrainingId = async (
   req: Request<BaseRouteParam, any, any, any>,
@@ -32,7 +34,7 @@ export const getWorksheetsByTrainingId = async (
 
 export const getWorksheetByWorksheetId = async (
   req: Request<WorksheetRouteParam, any, any, any>,
-  res: Response<Worksheet | string>,
+  res: Response<Worksheet | BaseApiResponse>,
   next: NextFunction,
 ) => {
   const trainingId = req.params.trainingId;
@@ -49,7 +51,7 @@ export const getWorksheetByWorksheetId = async (
 
   if (!data)
   {
-    return res.status(404).json('Worksheet not found');
+    return res.status(404).json({ message: 'Worksheet not found' });
   }
 
   const response: Worksheet = {
@@ -63,14 +65,24 @@ export const getWorksheetByWorksheetId = async (
 
 export const createWorksheetInTraining = async (
   req: Request<BaseRouteParam, any, { name: string }, any>,
-  res: Response<any>,
+  res: Response<CreateWorksheetResponse | BaseApiResponse>,
   next: NextFunction,
 ) => {
   const trainingId = req.params.trainingId;
   const name = req.body.name;
 
   if (!name || name.trim() === '') {
-    return res.status(400).json('Name not provided');
+    return res.status(400).json({ message: 'Name not provided' });
+  }
+
+  const training = await firestore()
+    .collection('trainings')
+    .doc(trainingId)
+    .get();
+
+  if (!training.exists)
+  {
+    return res.status(404).json({ message: 'Training not found' });
   }
 
   const response = await firestore()
@@ -82,23 +94,28 @@ export const createWorksheetInTraining = async (
       createdAt: firestore.FieldValue.serverTimestamp(),
     });
 
-  res.status(201).json({ message: `Worksheet for created!`, worksheetId: response.id });
+  res.status(201).json({ message: `Worksheet created`, worksheetId: response.id });
 };
 
 export const deleteWorksheetInTraining = async (
   req: Request<WorksheetRouteParam, any, any, any>,
-  res: Response<string>,
+  res: Response<BaseApiResponse>,
   next: NextFunction,
 ) => {
   const trainingId = req.params.trainingId;
   const worksheetId = req.params.worksheetId;
 
-  await firestore()
-    .collection('trainings')
-    .doc(trainingId)
-    .collection('worksheets')
-    .doc(worksheetId)
-    .delete();
+  try {
 
-  res.status(200).json('Deleted worksheet');
+    await firestore()
+      .collection('trainings')
+      .doc(trainingId)
+      .collection('worksheets')
+      .doc(worksheetId)
+      .delete();
+
+      res.status(202).json({ message: 'Worksheet deleted' });
+  } catch (e) {
+    res.status(404).json({ message: 'Worksheet not found' });
+  }
 };
