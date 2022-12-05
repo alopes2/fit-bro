@@ -1,2 +1,5 @@
 # 2020
-* text eol=lf 
+* text eol=lf
+*.jpg		-text
+*.png		-text
+*.ico		-text

@@ -8,7 +8,7 @@ function App() {
   return (
     <div className="App">
       <div>
-          <img src="/favicon-96.png" className="logo" alt="Vite logo" />
+          <img src="/android-chrome-192x192.png" className="logo" alt="Vite logo" />
       </div>
       <h1>Welcome to FitBuddy</h1>
       <div className="card">
